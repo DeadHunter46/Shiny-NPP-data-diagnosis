@@ -264,7 +264,7 @@ shinyServer(function(input, output) {
             }
           })
           
-          scatter.smooth(selectData())
+          scatter.smooth(data.frame(selectData()))
       
         }) #close renderPlot
       
@@ -342,8 +342,7 @@ shinyServer(function(input, output) {
         
         l_mod <- reactive({
           
-          lm(
-            burn[,input$e2] ~ burn[,input$e1],
+          lm(burn[,input$e2] ~ burn[,input$e1],
             data=burn)
           
           })
@@ -532,11 +531,13 @@ shinyServer(function(input, output) {
         })
         
         nb_clusters<- reactive({
-          factor(as.integer(pred_nb()))
+          as.integer(pred_nb())
+          #factor(as.integer(pred_nb()))
         })
         
         nb_clusters_full<- reactive({
-          factor(as.integer(pred_nb_full))
+          as.integer(pred_nb_full())
+          #factor(as.integer(pred_nb_full()))
         })
 
         
@@ -560,11 +561,19 @@ shinyServer(function(input, output) {
               }
             })
             
-            par(mar = c(5.1, 4.1, 0, 1))
-            plot(test_nb(),
-                 col = nb_clusters(),
-                 pch = 20, cex = 3)
+            hullplot(test_nb(), nb_clusters(),main = "Naive Bayes cluster")
+            
+            #par(mar = c(5.1, 4.1, 0, 1))
+            #plot(test_nb(),
+            #     col = nb_clusters(),
+            #     pch = 20, cex = 3)
           })
+        
+        output$nb_class<-renderText({
+          
+          #snb_clusters()
+          #nb_clusters_full()
+        })
         
         output$nb_plot_full<-renderPlot(
           {
@@ -586,10 +595,12 @@ shinyServer(function(input, output) {
               }
             })
             
-            par(mar = c(5.1, 4.1, 0, 1))
-            plot(NB_Data(),
-                 col = nb_clusters(),
-                 pch = 20, cex = 3)
+            hullplot(NB_Data(), nb_clusters_full(),main = "Naive Bayes cluster")
+            
+            #par(mar = c(5.1, 4.1, 0, 1))
+            #plot(NB_Data(),
+            #     col = nb_clusters(),
+            #     pch = 20, cex = 3)
           })
         
         output$train_select <- renderText({ 
@@ -698,26 +709,7 @@ shinyServer(function(input, output) {
     paste("Точность ",mean(pred_dbs()==sclass)*100,"%")
   })
   
-  output$dbs_plot<-renderPlot(
-    {
-      
-      withProgress(message = 'Построение графика', value = 0, {
-        # Number of times we'll go through the loop
-        m <- 4
-        
-        for (i in 1:m) {
-          
-          # Increment the progress bar, and update the detail text.
-          incProgress(1/m, detail = paste("Ожидайте", i))
-          
-          # Pause for 0.1 seconds to simulate a long computation.
-          Sys.sleep(0.1)
-        }
-      })
-
-      plot(dbs_Data(), col = res()$cluster + 1L, pch = res()$cluster + 1L)
-      
-    })
+ 
   
   output$hullplot<-renderPlot(
     {
@@ -756,8 +748,10 @@ shinyServer(function(input, output) {
           Sys.sleep(0.1)
         }
       })
+      
+      hullplot(dbs_Data(), pred_dbs())
 
-      plot(dbs_Data(), col = pred_dbs(), pch = pred_dbs())
+      #plot(dbs_Data(), col = pred_dbs(), pch = pred_dbs())
       
     })
   

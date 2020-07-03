@@ -283,6 +283,7 @@ shinyUI(navbarPage("Data analysis",
                                                                 textOutput("train_select"),
                                                                 tags$div("",style="color:black;
                                                                 padding-top: 32px"),
+                                                                verbatimTextOutput("nb_class"),
                                                                 plotOutput("nb_plot_test"),
                                                                 tableOutput("pred_nb_class"),
                                                                 textOutput("accuracy_nb"),
@@ -309,6 +310,8 @@ shinyUI(navbarPage("Data analysis",
                                                                 font-weight: 400;")
                                                                 ),
                                                        tabPanel("Полная выборка",
+                                                                tags$div("",style="color:black;
+                                                                padding-top: 32px"),
                                                                 plotOutput("nb_plot_full"),
                                                                 hr(),
                                                                 tableOutput("pred_nb_class_full"),
@@ -356,9 +359,6 @@ shinyUI(navbarPage("Data analysis",
                                          
                                          mainPanel(
                                            tabsetPanel(type = "tabs",
-                                                       tabPanel("Plot",
-                                                                plotOutput("dbs_plot")
-                                                       ),
                                                        tabPanel("HullPlot",
                                                                 plotOutput("hullplot")#to display the plot output
                                                        
